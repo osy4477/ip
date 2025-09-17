@@ -1,3 +1,4 @@
+//AI was used to generate this method
 public class Event extends Task {
     protected String from;
     protected String to;
