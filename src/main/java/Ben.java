@@ -3,18 +3,19 @@ import java.util.ArrayList;
 
 public class Ben {
     public static void main(String[] args) {
-
-        String greeting = "____________________________________________________________\n" +
-                " Hello! I'm Ben\n" +
-                " What can I do for you?\n" +
-                "____________________________________________________________\n";
-        String byeMessage = "____________________________________________________________\n" +
-                " Bye. Hope to see you again soon!\n" +
-                "____________________________________________________________";
-
-        System.out.println(greeting);
         Scanner scanner = new Scanner(System.in);
+<<<<<<< HEAD
         ArrayList<Task> tasks = new ArrayList<>();
+=======
+
+        Storage storage = new Storage("./data/duke.txt");
+        ArrayList<Task> tasks = storage.load();  // load tasks at startup
+
+        System.out.println("____________________________________________________________");
+        System.out.println(" Hello! I'm Ben");
+        System.out.println(" What can I do for you?");
+        System.out.println("____________________________________________________________");
+>>>>>>> branch-Level-7
 
         while (true) {
             String input = scanner.nextLine();
@@ -22,10 +23,13 @@ public class Ben {
 
             try {
                 if (input.equals("bye")) {
-                    System.out.println(byeMessage);
+                    System.out.println("____________________________________________________________");
+                    System.out.println(" Bye. Hope to see you again soon!");
+                    System.out.println("____________________________________________________________");
                     break;
 
                 } else if (input.equals("list")) {
+<<<<<<< HEAD
                     if (tasks.isEmpty()) {
                         System.out.println("Your list is empty!");
                     } else {
@@ -38,46 +42,68 @@ public class Ben {
                         }
                         System.out.println(output.toString());
                     }
+=======
+                    // same as before ...
+
+>>>>>>> branch-Level-7
                 } else if (words[0].equals("mark")) {
-                    if (words.length < 2) throw new IllegalArgumentException("Please specify which task to mark.");
                     int index = Integer.parseInt(words[1]) - 1;
                     tasks.get(index).markDone();
                     System.out.println("Nice! I've marked this task as done:\n  " + tasks.get(index));
+<<<<<<< HEAD
+=======
+                    storage.save(tasks);   //save after change
+>>>>>>> branch-Level-7
 
                 } else if (words[0].equals("unmark")) {
-                    if (words.length < 2) throw new IllegalArgumentException("Please specify which task to unmark.");
                     int index = Integer.parseInt(words[1]) - 1;
                     tasks.get(index).markNotDone();
                     System.out.println("OK, I've marked this task as not done yet:\n  " + tasks.get(index));
+<<<<<<< HEAD
+=======
+                    storage.save(tasks);   //save after change
+>>>>>>> branch-Level-7
 
                 } else if (words[0].equals("todo")) {
-                    if (words.length < 2 || words[1].trim().isEmpty()) {
-                        throw new IllegalArgumentException("Sorry the description of a todo cannot be empty...");
-                    }
                     Task t = new Todo(words[1]);
                     tasks.add(t);
+<<<<<<< HEAD
                    System.out.println("Got it. I've added this task:\n  " + t +
                             "\nNow you have " + tasks.size() + " tasks in the list.");
+=======
+                    System.out.println("Got it. I've added this task:\n  " + t +
+                            "\nNow you have " + tasks.size() + " tasks in the list.");
+                    storage.save(tasks);   // save after change
+>>>>>>> branch-Level-7
 
                 } else if (words[0].equals("deadline")) {
-                    if (words.length < 2 || !words[1].contains(" /by ")) {
-                        throw new IllegalArgumentException("Deadline must have a description and '/by <time>'.");
-                    }
                     String[] parts = words[1].split(" /by ", 2);
                     Task t = new Deadline(parts[0], parts[1]);
                     tasks.add(t);
                     System.out.println("Got it. I've added this task:\n  " + t +
                             "\nNow you have " + tasks.size() + " tasks in the list.");
+<<<<<<< HEAD
+=======
+                    storage.save(tasks);   // save after change
+>>>>>>> branch-Level-7
 
                 } else if (words[0].equals("event")) {
-                    if (words.length < 2 || !words[1].contains(" /from ") || !words[1].contains(" /to ")) {
-                        throw new IllegalArgumentException("Event must have a description, '/from <start>', and '/to <end>'.");
-                    }
                     String[] parts = words[1].split(" /from | /to ");
                     Task t = new Event(parts[0], parts[1], parts[2]);
                     tasks.add(t);
                     System.out.println("Got it. I've added this task:\n  " + t +
                             "\nNow you have " + tasks.size() + " tasks in the list.");
+<<<<<<< HEAD
+=======
+                    storage.save(tasks);   // ✅ save after change
+
+                } else if (words[0].equals("delete")) {
+                    int index = Integer.parseInt(words[1]) - 1;
+                    Task removed = tasks.remove(index);
+                    System.out.println("Noted. I've removed this task:\n  " + removed +
+                            "\nNow you have " + tasks.size() + " tasks in the list.");
+                    storage.save(tasks);   // ✅ save after change
+>>>>>>> branch-Level-7
 
                 } else if (words[0].equals("delete")) {
                     if (words.length < 2) throw new IllegalArgumentException("Please specify which task to delete.");

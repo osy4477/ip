@@ -1,4 +1,4 @@
-//AI was used to generate this method
+//AI was used in creating this class
 public class Todo extends Task {
     public Todo(String description) {
         super(description);

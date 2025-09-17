@@ -1,4 +1,4 @@
-//AI was used to generate this method
+//AI was used in creating this class
 public class Deadline extends Task {
     protected String by;
 
