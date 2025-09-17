@@ -1,3 +1,4 @@
+//AI was used to generate this method
 abstract public class Task {
     protected String description;
     protected boolean isDone;
