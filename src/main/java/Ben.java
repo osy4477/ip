@@ -80,7 +80,26 @@ public class Ben {
                     System.out.println("Got it. I've added this task:\n  " + t +
                             "\nNow you have " + taskCount + " tasks in the list.");
 
-                } else {
+                } else if (words[0].equals("delete")) {
+                    if (words.length < 2) throw new IllegalArgumentException("Please specify which task to delete.");
+                    int index = Integer.parseInt(words[1]) - 1;
+
+                    if (index < 0 || index >= taskCount) {
+                        throw new IllegalArgumentException("Invalid task number.");
+                    }
+
+                    Task removed = tasks[index];
+
+                    // Shift tasks left to fill the gap
+                    for (int i = index; i < taskCount - 1; i++) {
+                        tasks[i] = tasks[i + 1];
+                    }
+                    tasks[--taskCount] = null; // clear last slot
+
+                    System.out.println("Noted. I've removed this task:\n  " + removed +
+                            "\nNow you have " + taskCount + " tasks in the list.");
+                }
+                else {
                     throw new IllegalArgumentException("Sorry but I don't know what that means...");
                 }
 
