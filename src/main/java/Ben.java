@@ -7,11 +7,14 @@ public class Ben {
                 " Hello! I'm Ben\n" +
                 " What can I do for you?\n" +
                 "____________________________________________________________\n";
-        String byeMessage = " Bye. Hope to see you again soon!\n" +
+        String byeMessage = "____________________________________________________________\n" +
+                " Bye. Hope to see you again soon!\n" +
                 "____________________________________________________________";
 
         System.out.println(greeting);
         Scanner scanner = new Scanner(System.in);
+        String[] tasks = new String[100]; // fixed-size array
+        int taskCount = 0;                // number of tasks stored
 
         while (true) {
             String input = scanner.nextLine();
@@ -19,8 +22,22 @@ public class Ben {
             if (input.equals("bye")) {
                 System.out.println(byeMessage);
                 break;
+            } else if (input.equals("list")) {
+                //display stored tasks
+                StringBuilder output = new StringBuilder();
+                for (int i = 0; i < taskCount; i++) {
+                    output.append((i + 1) + ". " + tasks[i] + "\n");
+                }
+                //remove last newline if exists
+                if (output.length() > 0) {
+                    output.setLength(output.length() - 1);
+                }
+                System.out.println(output.toString());
             } else {
-                System.out.println(input);
+                //add new task
+                tasks[taskCount] = input;
+                taskCount++;
+                System.out.println("added: " + input);
             }
         }
     }
