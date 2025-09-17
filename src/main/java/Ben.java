@@ -28,8 +28,8 @@ public class Ben {
                 for (int i = 0; i < taskCount; i++) {
                     output.append((i + 1) + "." + tasks[i] + "\n");
                 }
-                if (output.charAt(output.length() - 1) == '\n') {
-                    output.setLength(output.length() - 1); // remove trailing newline
+                if (output.length() > 0 && output.charAt(output.length() - 1) == '\n') {
+                    output.setLength(output.length() - 1);
                 }
                 System.out.println(output.toString());
 
@@ -43,11 +43,29 @@ public class Ben {
                 tasks[index].markNotDone();
                 System.out.println("OK, I've marked this task as not done yet:\n  " + tasks[index]);
 
+            } else if (words[0].equals("todo")) {
+                Task t = new Todo(words[1]);
+                tasks[taskCount++] = t;
+                System.out.println("Got it. I've added this task:\n  " + t +
+                        "\nNow you have " + taskCount + " tasks in the list.");
+
+            } else if (words[0].equals("deadline")) {
+                String[] parts = words[1].split(" /by ", 2);
+                Task t = new Deadline(parts[0], parts[1]);
+                tasks[taskCount++] = t;
+                System.out.println("Got it. I've added this task:\n  " + t +
+                        "\nNow you have " + taskCount + " tasks in the list.");
+
+            } else if (words[0].equals("event")) {
+                String[] parts = words[1].split(" /from | /to ");
+                // parts[0] = desc, parts[1] = from, parts[2] = to
+                Task t = new Event(parts[0], parts[1], parts[2]);
+                tasks[taskCount++] = t;
+                System.out.println("Got it. I've added this task:\n  " + t +
+                        "\nNow you have " + taskCount + " tasks in the list.");
+
             } else {
-                // Add task
-                tasks[taskCount] = new Task(input);
-                taskCount++;
-                System.out.println("added: " + input);
+                System.out.println("I'm sorry, I don't know what that means :-(");
             }
         }
     }
