@@ -6,7 +6,7 @@ public class Ben {
         Scanner scanner = new Scanner(System.in);
 
         Storage storage = new Storage("./data/duke.txt");
-        ArrayList<Task> tasks = storage.load();  // load tasks at startup
+        ArrayList<Task> tasks = storage.load();
 
         System.out.println("____________________________________________________________");
         System.out.println(" Hello! I'm Ben");
@@ -41,20 +41,20 @@ public class Ben {
                     int index = Integer.parseInt(words[1]) - 1;
                     tasks.get(index).markDone();
                     System.out.println("Nice! I've marked this task as done:\n  " + tasks.get(index));
-                    storage.save(tasks);   //save after change
+                    storage.save(tasks);
 
                 } else if (words[0].equals("unmark")) {
                     int index = Integer.parseInt(words[1]) - 1;
                     tasks.get(index).markNotDone();
                     System.out.println("OK, I've marked this task as not done yet:\n  " + tasks.get(index));
-                    storage.save(tasks);   //save after change
+                    storage.save(tasks);
 
                 } else if (words[0].equals("todo")) {
                     Task t = new Todo(words[1]);
                     tasks.add(t);
                     System.out.println("Got it. I've added this task:\n  " + t +
                             "\nNow you have " + tasks.size() + " tasks in the list.");
-                    storage.save(tasks);   // save after change
+                    storage.save(tasks);
 
                 } else if (words[0].equals("deadline")) {
                     String[] parts = words[1].split(" /by ", 2);
@@ -62,7 +62,7 @@ public class Ben {
                     tasks.add(t);
                     System.out.println("Got it. I've added this task:\n  " + t +
                             "\nNow you have " + tasks.size() + " tasks in the list.");
-                    storage.save(tasks);   // save after change
+                    storage.save(tasks);
 
                 } else if (words[0].equals("event")) {
                     String[] parts = words[1].split(" /from | /to ");
@@ -70,14 +70,14 @@ public class Ben {
                     tasks.add(t);
                     System.out.println("Got it. I've added this task:\n  " + t +
                             "\nNow you have " + tasks.size() + " tasks in the list.");
-                    storage.save(tasks);   // save after change
+                    storage.save(tasks);
 
                 } else if (words[0].equals("delete")) {
                     int index = Integer.parseInt(words[1]) - 1;
                     Task removed = tasks.remove(index);
                     System.out.println("Noted. I've removed this task:\n  " + removed +
                             "\nNow you have " + tasks.size() + " tasks in the list.");
-                    storage.save(tasks);   // save after change
+                    storage.save(tasks);
 
                 } else if (words[0].equals("delete")) {
                     if (words.length < 2) throw new IllegalArgumentException("Please specify which task to delete.");
