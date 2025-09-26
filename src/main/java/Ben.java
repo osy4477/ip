@@ -38,7 +38,20 @@ public class Ben {
                     tasks.add(t);
                     System.out.println("Added: " + t);
                     break;
-                // similarly handle deadline, event, mark, unmark, delete
+                case "find":
+                    String keyword = c.getArgs();
+                    ArrayList<Task> results = tasks.findTasks(keyword);
+                    if (results.isEmpty()) {
+                        ui.showError("No matching tasks found!");
+                    } else {
+                        ui.showLine();
+                        System.out.println("Here are the matching tasks in your list:");
+                        for (int i = 0; i < results.size(); i++) {
+                            System.out.println((i + 1) + "." + results.get(i));
+                        }
+                        ui.showLine();
+                    }
+                    break;
                 default:
                     ui.showError("Unknown command: " + c.getCommand());
                 }
