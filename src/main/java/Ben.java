@@ -2,103 +2,56 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Ben {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+    private Storage storage;
+    private TaskList tasks;
+    private Ui ui;
 
-        Storage storage = new Storage("./data/duke.txt");
-        ArrayList<Task> tasks = storage.load();
-
-        System.out.println("____________________________________________________________");
-        System.out.println(" Hello! I'm Ben");
-        System.out.println(" What can I do for you?");
-        System.out.println("____________________________________________________________");
-
-        while (true) {
-            String input = scanner.nextLine();
-            String[] words = input.split(" ", 2);
-
+    public Ben(String filePath) {
+            ui = new Ui();
+            storage = new Storage(filePath);
             try {
-                if (input.equals("bye")) {
-                    System.out.println("____________________________________________________________");
-                    System.out.println(" Bye. Hope to see you again soon!");
-                    System.out.println("____________________________________________________________");
-                    break;
-
-                } else if (input.equals("list")) {
-                    if (tasks.isEmpty()) {
-                        System.out.println("Your list is empty!");
-                    } else {
-                        StringBuilder output = new StringBuilder("Here are the tasks in your list:\n");
-                        for (int i = 0; i < tasks.size(); i++) {
-                            output.append((i + 1) + "." + tasks.get(i) + "\n");
-                        }
-                        if (output.charAt(output.length() - 1) == '\n') {
-                            output.setLength(output.length() - 1);
-                        }
-                        System.out.println(output.toString());
-                    }
-                } else if (words[0].equals("mark")) {
-                    int index = Integer.parseInt(words[1]) - 1;
-                    tasks.get(index).markDone();
-                    System.out.println("Nice! I've marked this task as done:\n  " + tasks.get(index));
-                    storage.save(tasks);
-
-                } else if (words[0].equals("unmark")) {
-                    int index = Integer.parseInt(words[1]) - 1;
-                    tasks.get(index).markNotDone();
-                    System.out.println("OK, I've marked this task as not done yet:\n  " + tasks.get(index));
-                    storage.save(tasks);
-
-                } else if (words[0].equals("todo")) {
-                    Task t = new Todo(words[1]);
-                    tasks.add(t);
-                    System.out.println("Got it. I've added this task:\n  " + t +
-                            "\nNow you have " + tasks.size() + " tasks in the list.");
-                    storage.save(tasks);
-
-                } else if (words[0].equals("deadline")) {
-                    String[] parts = words[1].split(" /by ", 2);
-                    Task t = new Deadline(parts[0], parts[1]);
-                    tasks.add(t);
-                    System.out.println("Got it. I've added this task:\n  " + t +
-                            "\nNow you have " + tasks.size() + " tasks in the list.");
-                    storage.save(tasks);
-
-                } else if (words[0].equals("event")) {
-                    String[] parts = words[1].split(" /from | /to ");
-                    Task t = new Event(parts[0], parts[1], parts[2]);
-                    tasks.add(t);
-                    System.out.println("Got it. I've added this task:\n  " + t +
-                            "\nNow you have " + tasks.size() + " tasks in the list.");
-                    storage.save(tasks);
-
-                } else if (words[0].equals("delete")) {
-                    int index = Integer.parseInt(words[1]) - 1;
-                    Task removed = tasks.remove(index);
-                    System.out.println("Noted. I've removed this task:\n  " + removed +
-                            "\nNow you have " + tasks.size() + " tasks in the list.");
-                    storage.save(tasks);
-
-                } else if (words[0].equals("delete")) {
-                    if (words.length < 2) throw new IllegalArgumentException("Please specify which task to delete.");
-                    int index = Integer.parseInt(words[1]) - 1;
-
-                    if (index < 0 || index >= tasks.size()) {
-                        throw new IllegalArgumentException("Invalid task number.");
-                    }
-
-                    Task removed = tasks.remove(index);
-
-                    System.out.println("Noted. I've removed this task:\n  " + removed +
-                            "\nNow you have " + tasks.size() + " tasks in the list.");
-                }
-                else {
-                    throw new IllegalArgumentException("Sorry but I don't know what that means...");
-                }
-
+                tasks = new TaskList(storage.load());
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                ui.showError("Error loading file. Starting with empty task list.");
+                tasks = new TaskList();
             }
         }
-    }
+
+        public void run() {
+            ui.showWelcome();
+            boolean isExit = false;
+            while (!isExit) {
+                String fullCommand = ui.readCommand();
+                Command c = Parser.parse(fullCommand);
+                switch (c.getCommand()) {
+                case "bye":
+                    ui.showBye();
+                    isExit = true;
+                    break;
+                case "list":
+                    for (int i = 0; i < tasks.size(); i++) {
+                        System.out.println((i + 1) + "." + tasks.get(i));
+                    }
+                    break;
+                case "todo":
+                    Task t = new Todo(c.getArgs());
+                    tasks.add(t);
+                    System.out.println("Added: " + t);
+                    break;
+                // similarly handle deadline, event, mark, unmark, delete
+                default:
+                    ui.showError("Unknown command: " + c.getCommand());
+                }
+
+                try {
+                    storage.save(tasks.getTasks());
+                } catch (Exception e) {
+                    ui.showError("Error saving tasks!");
+                }
+            }
+        }
+
+        public static void main(String[] args) {
+            new Ben("./data/Ben.txt").run();
+        }
 }

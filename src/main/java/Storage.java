@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Storage {
-    private final File file;
+    private String filePath;
 
     private static final String TASK_TODO = "T";
     private static final String TASK_DEADLINE = "D";
@@ -23,84 +23,64 @@ public class Storage {
     private static final int IDX_EVENT_TO = 4;
 
     public Storage(String filePath) {
-        this.file = new File(filePath);
+        this.filePath = filePath;
     }
 
     // Load tasks from disk
-    public ArrayList<Task> load() {
+    public ArrayList<Task> load() throws IOException {
         ArrayList<Task> tasks = new ArrayList<>();
-
-        try {
-            if (!file.exists()) {
-                // Create folder if missing
-                file.getParentFile().mkdirs();
-                file.createNewFile();
-                return tasks;
-            }
-
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(DELIMITER);
-                String type = parts[IDX_TYPE];
-                boolean isDone = parts[IDX_DONE].equals(DONE_MARK);
-                Task t;
-
-                switch (type) {
-                case TASK_TODO:
-                    t = new Todo(parts[IDX_DESC]);
-                    break;
-                case TASK_DEADLINE:
-                    t = new Deadline(parts[IDX_DESC], parts[IDX_DEADLINE_BY]);
-                    break;
-                case TASK_EVENT:
-                    t = new Event(parts[IDX_DESC], parts[IDX_EVENT_FROM], parts[IDX_EVENT_TO]);
-                    break;
-                default:
-                    continue; // skip invalid lines
-                }
-
-                if (isDone) {
-                    t.markDone();
-                }
-                tasks.add(t);
-            }
-            br.close();
-        } catch (IOException e) {
-            System.out.println("Error loading file: " + e.getMessage());
+        File file = new File(filePath);
+        if (!file.exists()) {
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+            return tasks;
         }
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(DELIMITER);
+            String type = parts[IDX_TYPE];
+            boolean isDone = parts[IDX_DONE].equals(DONE_MARK);
+            Task t;
+            switch (type) {
+            case TASK_TODO:
+                t = new Todo(parts[IDX_DESC]);
+                break;
+            case TASK_DEADLINE:
+                t = new Deadline(parts[IDX_DESC], parts[IDX_DEADLINE_BY]);
+                break;
+            case TASK_EVENT:
+                t = new Event(parts[IDX_DESC], parts[IDX_EVENT_FROM], parts[IDX_EVENT_TO]);
+                break;
+            default:
+                continue;
+            }
 
+            if (isDone) {
+                t.markDone();
+            }
+            tasks.add(t);
+        }
+        br.close();
         return tasks;
     }
 
     // Save tasks to disk
-    public void save(ArrayList<Task> tasks) {
-        try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-            for (Task t : tasks) {
-                bw.write(formatTask(t));
-                bw.newLine();
+    public void save(ArrayList<Task> tasks) throws IOException {
+        BufferedWriter bw = new BufferedWriter(new FileWriter(filePath));
+        for (Task t : tasks) {
+            if (t instanceof Todo) {
+                bw.write("T | " + (t.isDone ? "1" : "0") + " | " + t.description);
+            } else if (t instanceof Deadline) {
+                Deadline d = (Deadline) t;
+                bw.write("D | " + (d.isDone ? "1" : "0") + " | " + d.description + " | " + d.by);
+            } else if (t instanceof Event) {
+                Event e = (Event) t;
+                bw.write("E | " + (e.isDone ? "1" : "0") + " | " + e.description + " | " + e.from + " | " + e.to);
             }
-            bw.close();
-        } catch (IOException e) {
-            System.out.println("Error saving file: " + e.getMessage());
+            bw.newLine();
         }
+        bw.close();
     }
 
-    private String formatTask(Task t) {
-        String type;
-        if (t instanceof Todo) {
-            type = "T";
-            return String.format("%s | %d | %s", type, t.isDone ? 1 : 0, t.description);
-        } else if (t instanceof Deadline) {
-            type = "D";
-            return String.format("%s | %d | %s | %s", type, t.isDone ? 1 : 0,
-                    t.description, ((Deadline) t).by);
-        } else if (t instanceof Event) {
-            type = "E";
-            return String.format("%s | %d | %s | %s | %s", type, t.isDone ? 1 : 0,
-                    t.description, ((Event) t).from, ((Event) t).to);
-        }
-        return "";
-    }
 }
