@@ -1,3 +1,7 @@
+/**
+ * Parses raw user input strings into command words and arguments,
+ * to be interpreted and executed by the program.
+ */
 public class Parser {
     public static Command parse(String input) {
         String[] words = input.split(" ", 2);

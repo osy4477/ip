@@ -1,3 +1,8 @@
+/**
+ * Represents a user command that can be executed
+ * on the task list, with optional interaction with
+ * the UI and Storage.
+ */
 public class Command {
     String command;
     String args;

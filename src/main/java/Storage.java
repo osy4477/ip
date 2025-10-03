@@ -7,6 +7,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Handles loading tasks from a save file and saving tasks
+ * back into the file for persistence across sessions.
+ */
 public class Storage {
     private String filePath;
 
@@ -26,7 +30,12 @@ public class Storage {
         this.filePath = filePath;
     }
 
-    // Load tasks from disk
+    /**
+     * Loads the saved tasks from the file.
+     *
+     * @return A list of tasks loaded from file
+     * @throws IOException If the file cannot be read
+     */
     public ArrayList<Task> load() throws IOException {
         ArrayList<Task> tasks = new ArrayList<>();
         File file = new File(filePath);
@@ -65,7 +74,12 @@ public class Storage {
         return tasks;
     }
 
-    // Save tasks to disk
+    /**
+     * Saves the current list of tasks into the file.
+     *
+     * @param tasks The task list to save
+     * @throws IOException If the file cannot be written
+     */
     public void save(ArrayList<Task> tasks) throws IOException {
         BufferedWriter bw = new BufferedWriter(new FileWriter(filePath));
         for (Task t : tasks) {

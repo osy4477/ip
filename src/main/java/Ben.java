@@ -6,6 +6,11 @@ public class Ben {
     private TaskList tasks;
     private Ui ui;
 
+    /**
+     * Entry point of the Ben task manager application.
+     * Initializes components and runs the main program loop,
+     * processing user input until the user exits.
+     */
     public Ben(String filePath) {
             ui = new Ui();
             storage = new Storage(filePath);
@@ -102,7 +107,14 @@ public class Ben {
             }
         }
 
-        public static void main(String[] args) {
+    /**
+     * Runs the main program loop:
+     * - Shows the welcome message
+     * - Reads user commands
+     * - Executes them on the task list
+     * - Exits when the user issues the exit command
+     */
+    public static void main(String[] args) {
             new Ben("./data/Ben.txt").run();
         }
 }
