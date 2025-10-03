@@ -38,11 +38,49 @@ public class Ben {
                     tasks.add(t);
                     System.out.println("Added: " + t);
                     break;
-                // similarly handle deadline, event, mark, unmark, delete
+                case "deadline":
+                    String[] parts = c.getArgs().split(" /by ", 2);
+                    if (parts.length < 2) {
+                        ui.showError("Deadline must include a description and '/by <time>'.");
+                        break;
+                    }
+                    Task d = new Deadline(parts[0], parts[1]);
+                    tasks.add(d);
+                    System.out.println("Added: " + d);
+                    break;
+
+                case "event":
+                    String[] eParts = c.getArgs().split(" /from | /to ");
+                    if (eParts.length < 3) {
+                        ui.showError("Event must include description, '/from <start>', and '/to <end>'.");
+                        break;
+                    }
+                    Task e = new Event(eParts[0], eParts[1], eParts[2]);
+                    tasks.add(e);
+                    System.out.println("Added: " + e);
+                    break;
+
+                case "mark":
+                    int markIndex = Integer.parseInt(c.getArgs()) - 1;
+                    tasks.get(markIndex).markDone();
+                    System.out.println("Nice! I've marked this task as done:\n  " + tasks.get(markIndex));
+                    break;
+
+                case "unmark":
+                    int unmarkIndex = Integer.parseInt(c.getArgs()) - 1;
+                    tasks.get(unmarkIndex).markNotDone();
+                    System.out.println("OK, I've marked this task as not done yet:\n  " + tasks.get(unmarkIndex));
+                    break;
+
+                case "delete":
+                    int deleteIndex = Integer.parseInt(c.getArgs()) - 1;
+                    Task removed = tasks.delete(deleteIndex);
+                    System.out.println("Noted. I've removed this task:\n  " + removed +
+                            "\nNow you have " + tasks.size() + " tasks in the list.");
+                    break;
                 default:
                     ui.showError("Unknown command: " + c.getCommand());
                 }
-
                 try {
                     storage.save(tasks.getTasks());
                 } catch (Exception e) {
